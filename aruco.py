@@ -7,7 +7,7 @@ import cv2.aruco as aruco
 import os
 import numpy as np
 
-def findArucoMarker(img, markerSize=4,totalMarkers=250, draw=True):
+def findArucoMarker(img, markerSize=4,totalMarkers=250, draw=True):             #aruco 마커를 검출
     imgGray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
     key = getattr(aruco, f'DICT_{markerSize}X{markerSize}_{totalMarkers}')
     arucoDict = aruco.Dictionary_get(key)
@@ -25,8 +25,8 @@ def augmentAruco(bbox, id,img, imgAug, drawId = True):
 
     tl = bbox[0][0][0], bbox[0][0][1]
     tr = bbox[0][1][0], bbox[0][1][1]
-    bl = bbox[0][2][0], bbox[0][2][1]
-    br = bbox[0][3][0], bbox[0][3][1]
+    br = bbox[0][2][0], bbox[0][2][1]
+    bl = bbox[0][3][0], bbox[0][3][1]
     
     h, w, c = imgAug.shape
     
