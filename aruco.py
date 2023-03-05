@@ -1,3 +1,7 @@
+# python == 3.7
+# numpy == 1.20.1
+# opencv-contrib-python == 4.5.1.48
+
 import cv2
 import cv2.aruco as aruco
 import os
@@ -11,17 +15,39 @@ def findArucoMarker(img, markerSize=4,totalMarkers=250, draw=True):
     bboxs, ids, rejected =  aruco.detectMarkers(imgGray,
                                                 arucoDict,
                                                 parameters = arucoParam)
-    print(ids)
+   # print(ids) : 정상적으로 인식하는지 테스트하는데 사용
     if draw:
         aruco.drawDetectedMarkers(img, bboxs)
+        
+    return [bboxs, ids]
     
+def augmentAruco(bbox, id,img, imgAug, drawId = True):
 
+    tl = bbox[0][0][0], bbox[0][0][1]
+    tr = bbox[0][1][0], bbox[0][1][1]
+    bl = bbox[0][2][0], bbox[0][2][1]
+    br = bbox[0][3][0], bbox[0][3][1]
+    
+    h, w, c = imgAug.shape
+    
+    pts1 = np.array([tl, tr, br, bl])
+    pts2 = np.float32([[0, 0],[w, 0],[w, h],[0, h]])
+    matrix, _ = cv2.findHomography(pts2, pts1)
+    imgOut = cv2.warpPerspective(imgAug, matrix, (img.shape[1],img.shape[0]))
+    return imgOut
+    
 def main():
     cap = cv2.VideoCapture(0)
-    
+    imgAug =cv2.imread("Markers/23.jpg")
     while True:
         sccuess, img = cap.read()
-        findArucoMarker(img)
+        arucoFound = findArucoMarker(img)
+        
+        # Loop through all the markers and augment each one
+        if len(arucoFound[0])!=0:
+            for bbox, id in zip(arucoFound[0], arucoFound[1]):
+                img = augmentAruco(bbox, id, img, imgAug)
+        
         cv2.imshow("image",img)
         cv2.waitKey(1)
         
