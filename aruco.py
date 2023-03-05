@@ -12,6 +12,8 @@ def findArucoMarker(img, markerSize=4,totalMarkers=250, draw=True):
                                                 arucoDict,
                                                 parameters = arucoParam)
     print(ids)
+    if draw:
+        aruco.drawDetectedMarkers(img, bboxs)
     
 
 def main():
