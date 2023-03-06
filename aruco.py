@@ -4,12 +4,7 @@ import os
 import numpy as np
 
 def loadAugImage(path):
-    """_summary_
 
-    Args: floder in which all the markers images with ids are stored
-
-    Returns: dictionary with key as the id and values as augment image
-    """
     myList = os.listdir(path)
     noOFMarkers = len(myList)
     print("Totla Number of Markers Detected: ", noOFMarkers)
@@ -22,15 +17,7 @@ def loadAugImage(path):
     return augDics
 
 def findArucoMarker(img, markerSize=4,totalMarkers=250, draw=True):             #aruco 마커를 검출
-    """_summary_
 
-    Args:
-        img (_type_): image in which to find the aruco markers
-        markerSize (int, optional): that size of the markers
-        totalMarkers (int, optional): total number of markers that compose the dictionary
-        draw (bool, optional):flag to draw bbox around markers detected
-        return: boundding boxes and id numbers of markers detected
-    """
     imgGray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
     key = getattr(aruco, f'DICT_{markerSize}X{markerSize}_{totalMarkers}')
     arucoDict = aruco.Dictionary_get(key)
@@ -45,17 +32,6 @@ def findArucoMarker(img, markerSize=4,totalMarkers=250, draw=True):             
     return [bboxs, ids]
     
 def augmentAruco(bbox, id,img, imgAug, drawId = True):
-    """_summary_
-
-    Args:
-        bbox (_type_):the four corner point of the box
-        id (_type_): marker id of the corresponding box used only for display
-        img (_type_): the final image on which to draw
-        imgAug (_type_): the image that will be overlapped on the marker
-        drawId (bool, optional): flag to display the id of the detected markers
-
-    Returns: image with the agument image overlaid
-    """
 
     tl = bbox[0][0][0], bbox[0][0][1]
     tr = bbox[0][1][0], bbox[0][1][1]
