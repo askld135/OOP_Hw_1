@@ -7,6 +7,23 @@ import cv2.aruco as aruco
 import os
 import numpy as np
 
+def loadAugImage(path):
+    """_summary_
+
+    Args: floder in which all the markers images with ids are stored
+
+    Returns: dictionary with key as the id and values as augment image
+    """
+    myList = os.listdir(path)
+    noOFMarkers = len(myList)
+    print("Totla Number of Markers Detected: ", noOFMarkers)
+    augDics = {}
+    for imgPath in myList:
+        key = int(os.path.splitext(imgPath)[0])
+        imgAug = cv2.imread(f'{path}/{imgPath}')
+        augDics[key] = imgAug
+        return augDics
+
 def findArucoMarker(img, markerSize=4,totalMarkers=250, draw=True):             #aruco 마커를 검출
     imgGray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
     key = getattr(aruco, f'DICT_{markerSize}X{markerSize}_{totalMarkers}')
@@ -45,7 +62,8 @@ def augmentAruco(bbox, id,img, imgAug, drawId = True):
     
 def main():
     cap = cv2.VideoCapture(0)
-    imgAug =cv2.imread("Markers/23.jpg")
+    augDics = loadAugImage("Markers")
+    
     while True:
         sccuess, img = cap.read()
         arucoFound = findArucoMarker(img)
@@ -53,7 +71,8 @@ def main():
         # Loop through all the markers and augment each one
         if len(arucoFound[0])!=0:
             for bbox, id in zip(arucoFound[0], arucoFound[1]):
-                img = augmentAruco(bbox, id, img, imgAug)
+                if int(id) in augDics.keys():
+                    img = augmentAruco(bbox, id, img, augDics[int(id)])
         
         cv2.imshow("image",img)
         cv2.waitKey(1)
