@@ -36,6 +36,11 @@ def augmentAruco(bbox, id,img, imgAug, drawId = True):
     imgOut = cv2.warpPerspective(imgAug, matrix, (img.shape[1],img.shape[0]))
     cv2.fillConvexPoly(img, pts1.astype(int),(0, 0, 0))
     imgOut = img + imgOut
+    
+    if drawId:
+        cv2.putText(imgOut, str(id), tl, cv2.FONT_HERSHEY_PLAIN, 2,
+                    (255, 0, 255), 2)
+        
     return imgOut
     
 def main():
