@@ -34,6 +34,8 @@ def augmentAruco(bbox, id,img, imgAug, drawId = True):
     pts2 = np.float32([[0, 0],[w, 0],[w, h],[0, h]])
     matrix, _ = cv2.findHomography(pts2, pts1)
     imgOut = cv2.warpPerspective(imgAug, matrix, (img.shape[1],img.shape[0]))
+    cv2.fillConvexPoly(img, pts1.astype(int),(0, 0, 0))
+    imgOut = img + imgOut
     return imgOut
     
 def main():
@@ -54,3 +56,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+# https://www.youtube.com/watch?v=v5a7pKSOJd8 36:00부터 이어서 
