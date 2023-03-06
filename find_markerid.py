@@ -2,7 +2,7 @@ import cv2
 import cv2.aruco as aruco
 import os
 import numpy as np
-def findArucoMarker(img, markerSize=4,totalMarkers=250, draw=True):             #aruco 마커를 검출
+def findArucoMarker(img, markerSize=6,totalMarkers=250, draw=True):             #aruco 마커를 검출
     imgGray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
     key = getattr(aruco, f'DICT_{markerSize}X{markerSize}_{totalMarkers}')
     arucoDict = aruco.Dictionary_get(key)

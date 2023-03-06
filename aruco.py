@@ -1,7 +1,3 @@
-# python == 3.7
-# numpy == 1.20.1
-# opencv-contrib-python == 4.5.1.48
-
 import cv2
 import cv2.aruco as aruco
 import os
@@ -22,9 +18,19 @@ def loadAugImage(path):
         key = int(os.path.splitext(imgPath)[0])
         imgAug = cv2.imread(f'{path}/{imgPath}')
         augDics[key] = imgAug
-        return augDics
+        
+    return augDics
 
 def findArucoMarker(img, markerSize=4,totalMarkers=250, draw=True):             #aruco 마커를 검출
+    """_summary_
+
+    Args:
+        img (_type_): image in which to find the aruco markers
+        markerSize (int, optional): that size of the markers
+        totalMarkers (int, optional): total number of markers that compose the dictionary
+        draw (bool, optional):flag to draw bbox around markers detected
+        return: boundding boxes and id numbers of markers detected
+    """
     imgGray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
     key = getattr(aruco, f'DICT_{markerSize}X{markerSize}_{totalMarkers}')
     arucoDict = aruco.Dictionary_get(key)
@@ -39,6 +45,17 @@ def findArucoMarker(img, markerSize=4,totalMarkers=250, draw=True):             
     return [bboxs, ids]
     
 def augmentAruco(bbox, id,img, imgAug, drawId = True):
+    """_summary_
+
+    Args:
+        bbox (_type_):the four corner point of the box
+        id (_type_): marker id of the corresponding box used only for display
+        img (_type_): the final image on which to draw
+        imgAug (_type_): the image that will be overlapped on the marker
+        drawId (bool, optional): flag to display the id of the detected markers
+
+    Returns: image with the agument image overlaid
+    """
 
     tl = bbox[0][0][0], bbox[0][0][1]
     tr = bbox[0][1][0], bbox[0][1][1]
@@ -76,8 +93,17 @@ def main():
         
         cv2.imshow("image",img)
         cv2.waitKey(1)
-        
+        if cv2.waitKey(1) > 0:
+            cap.release()
+            cv2.destroyAllWindows()
+
+       
 
 if __name__ == "__main__":
     main()
-# https://www.youtube.com/watch?v=v5a7pKSOJd8 36:00부터 이어서 
+    
+    
+# python == 3.7
+# numpy == 1.20.1
+# opencv-contrib-python == 4.5.1.48
+# https://www.youtube.com/watch?v=v5a7pKSOJd8
