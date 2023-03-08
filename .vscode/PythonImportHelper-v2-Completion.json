@@ -1,0 +1,155 @@
+[
+    {
+        "label": "cv2",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "cv2",
+        "description": "cv2",
+        "detail": "cv2",
+        "documentation": {}
+    },
+    {
+        "label": "cv2.aruco",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "cv2.aruco",
+        "description": "cv2.aruco",
+        "detail": "cv2.aruco",
+        "documentation": {}
+    },
+    {
+        "label": "os",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "os",
+        "description": "os",
+        "detail": "os",
+        "documentation": {}
+    },
+    {
+        "label": "numpy",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "numpy",
+        "description": "numpy",
+        "detail": "numpy",
+        "documentation": {}
+    },
+    {
+        "label": "loadAugImage",
+        "kind": 2,
+        "importPath": "aruco",
+        "description": "aruco",
+        "peekOfCode": "def loadAugImage(path):\n    myList = os.listdir(path)\n    noOFMarkers = len(myList)\n    print(\"Totla Number of Markers Detected: \", noOFMarkers)\n    augDics = {}\n    for imgPath in myList:\n        key = int(os.path.splitext(imgPath)[0])\n        imgAug = cv2.imread(f'{path}/{imgPath}')\n        augDics[key] = imgAug\n    return augDics",
+        "detail": "aruco",
+        "documentation": {}
+    },
+    {
+        "label": "findArucoMarker",
+        "kind": 2,
+        "importPath": "aruco",
+        "description": "aruco",
+        "peekOfCode": "def findArucoMarker(img, markerSize=4,totalMarkers=250, draw=True):             #aruco 마커를 검출\n    imgGray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)\n    key = getattr(aruco, f'DICT_{markerSize}X{markerSize}_{totalMarkers}')\n    arucoDict = aruco.Dictionary_get(key)\n    arucoParam = aruco.DetectorParameters_create()\n    bboxs, ids, rejected =  aruco.detectMarkers(imgGray,\n                                                arucoDict,\n                                                parameters = arucoParam)\n   # print(ids) : 정상적으로 인식하는지 테스트하는데 사용\n    if draw:",
+        "detail": "aruco",
+        "documentation": {}
+    },
+    {
+        "label": "augmentAruco",
+        "kind": 2,
+        "importPath": "aruco",
+        "description": "aruco",
+        "peekOfCode": "def augmentAruco(bbox, id,img, imgAug, drawId = True):\n    tl = bbox[0][0][0], bbox[0][0][1]\n    tr = bbox[0][1][0], bbox[0][1][1]\n    br = bbox[0][2][0], bbox[0][2][1]\n    bl = bbox[0][3][0], bbox[0][3][1]\n    h, w, c = imgAug.shape\n    pts1 = np.array([tl, tr, br, bl])\n    pts2 = np.float32([[0, 0],[w, 0],[w, h],[0, h]])\n    matrix, _ = cv2.findHomography(pts2, pts1)\n    imgOut = cv2.warpPerspective(imgAug, matrix, (img.shape[1],img.shape[0]))",
+        "detail": "aruco",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "aruco",
+        "description": "aruco",
+        "peekOfCode": "def main():\n    cap = cv2.VideoCapture(0)\n    augDics = loadAugImage(\"Markers\")\n    while True:\n        sccuess, img = cap.read()\n        arucoFound = findArucoMarker(img)\n        # Loop through all the markers and augment each one\n        if len(arucoFound[0])!=0:\n            for bbox, id in zip(arucoFound[0], arucoFound[1]):\n                if int(id) in augDics.keys():",
+        "detail": "aruco",
+        "documentation": {}
+    },
+    {
+        "label": "findArucoMarker",
+        "kind": 2,
+        "importPath": "aruco_one_object",
+        "description": "aruco_one_object",
+        "peekOfCode": "def findArucoMarker(img, markerSize=4,totalMarkers=250, draw=True):             #aruco 마커를 검출\n    imgGray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)\n    key = getattr(aruco, f'DICT_{markerSize}X{markerSize}_{totalMarkers}')\n    arucoDict = aruco.Dictionary_get(key)\n    arucoParam = aruco.DetectorParameters_create()\n    bboxs, ids, rejected =  aruco.detectMarkers(imgGray,\n                                                arucoDict,\n                                                parameters = arucoParam)\n   # print(ids) : 정상적으로 인식하는지 테스트하는데 사용\n    if draw:",
+        "detail": "aruco_one_object",
+        "documentation": {}
+    },
+    {
+        "label": "augmentAruco",
+        "kind": 2,
+        "importPath": "aruco_one_object",
+        "description": "aruco_one_object",
+        "peekOfCode": "def augmentAruco(bbox, id,img, imgAug, drawId = True):\n    tl = bbox[0][0][0], bbox[0][0][1]\n    tr = bbox[0][1][0], bbox[0][1][1]\n    br = bbox[0][2][0], bbox[0][2][1]\n    bl = bbox[0][3][0], bbox[0][3][1]\n    h, w, c = imgAug.shape\n    pts1 = np.array([tl, tr, br, bl])\n    pts2 = np.float32([[0, 0],[w, 0],[w, h],[0, h]])\n    matrix, _ = cv2.findHomography(pts2, pts1)\n    imgOut = cv2.warpPerspective(imgAug, matrix, (img.shape[1],img.shape[0]))",
+        "detail": "aruco_one_object",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "aruco_one_object",
+        "description": "aruco_one_object",
+        "peekOfCode": "def main():\n    cap = cv2.VideoCapture(0)\n    imgAug =cv2.imread(\"Markers/23.jpg\")\n    while True:\n        sccuess, img = cap.read()\n        arucoFound = findArucoMarker(img)\n        # Loop through all the markers and augment each one\n        if len(arucoFound[0])!=0:\n            for bbox, id in zip(arucoFound[0], arucoFound[1]):\n                img = augmentAruco(bbox, id, img, imgAug)",
+        "detail": "aruco_one_object",
+        "documentation": {}
+    },
+    {
+        "label": "findArucoMarker",
+        "kind": 2,
+        "importPath": "extract_markers",
+        "description": "extract_markers",
+        "peekOfCode": "def findArucoMarker(img, markerSize=4,totalMarkers=250, draw=True):             #aruco 마커를 검출\n    imgGray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)\n    key = getattr(aruco, f'DICT_{markerSize}X{markerSize}_{totalMarkers}')\n    arucoDict = aruco.Dictionary_get(key)\n    arucoParam = aruco.DetectorParameters_create()\n    bboxs, ids, rejected =  aruco.detectMarkers(imgGray,\n                                                arucoDict,\n                                                parameters = arucoParam)\n   # print(ids) : 정상적으로 인식하는지 테스트하는데 사용\n    if draw:",
+        "detail": "extract_markers",
+        "documentation": {}
+    },
+    {
+        "label": "augmentAruco",
+        "kind": 2,
+        "importPath": "extract_markers",
+        "description": "extract_markers",
+        "peekOfCode": "def augmentAruco(bbox, id,img, imgAug, drawId = True):\n    tl = bbox[0][0][0], bbox[0][0][1]\n    tr = bbox[0][1][0], bbox[0][1][1]\n    br = bbox[0][2][0], bbox[0][2][1]\n    bl = bbox[0][3][0], bbox[0][3][1]\n    h, w, c = imgAug.shape\n    pts1 = np.array([tl, tr, br, bl])\n    pts2 = np.float32([[0, 0],[w, 0],[w, h],[0, h]])\n    matrix, _ = cv2.findHomography(pts2, pts1)\n    imgOut = cv2.warpPerspective(imgAug, matrix, (img.shape[1],img.shape[0]))",
+        "detail": "extract_markers",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "extract_markers",
+        "description": "extract_markers",
+        "peekOfCode": "def main():\n    cap = cv2.VideoCapture(0)\n    imgAug =cv2.imread(\"Markers/23.jpg\")\n    while True:\n        sccuess, img = cap.read()\n        arucoFound = findArucoMarker(img)\n        # Loop through all the markers and augment each one\n        if len(arucoFound[0])!=0:\n            for bbox, id in zip(arucoFound[0], arucoFound[1]):\n                 augmentAruco(bbox, id, img, imgAug)",
+        "detail": "extract_markers",
+        "documentation": {}
+    },
+    {
+        "label": "findArucoMarker",
+        "kind": 2,
+        "importPath": "find_markerid",
+        "description": "find_markerid",
+        "peekOfCode": "def findArucoMarker(img, markerSize=6,totalMarkers=250, draw=True):             #aruco 마커를 검출\n    imgGray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)\n    key = getattr(aruco, f'DICT_{markerSize}X{markerSize}_{totalMarkers}')\n    arucoDict = aruco.Dictionary_get(key)\n    arucoParam = aruco.DetectorParameters_create()\n    bboxs, ids, rejected =  aruco.detectMarkers(imgGray,\n                                                arucoDict,\n                                                parameters = arucoParam)\n   # print(ids) : 정상적으로 인식하는지 테스트하는데 사용\n    if draw:",
+        "detail": "find_markerid",
+        "documentation": {}
+    },
+    {
+        "label": "augmentAruco",
+        "kind": 2,
+        "importPath": "find_markerid",
+        "description": "find_markerid",
+        "peekOfCode": "def augmentAruco(bbox, id,img, imgAug, drawId = True):\n    tl = bbox[0][0][0], bbox[0][0][1]\n    tr = bbox[0][1][0], bbox[0][1][1]\n    br = bbox[0][2][0], bbox[0][2][1]\n    bl = bbox[0][3][0], bbox[0][3][1]\n    h, w, c = imgAug.shape\n    pts1 = np.array([tl, tr, br, bl])\n    pts2 = np.float32([[0, 0],[w, 0],[w, h],[0, h]])\n    matrix, _ = cv2.findHomography(pts2, pts1)\n    imgOut = cv2.warpPerspective(imgAug, matrix, (img.shape[1],img.shape[0]))",
+        "detail": "find_markerid",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "find_markerid",
+        "description": "find_markerid",
+        "peekOfCode": "def main():\n    cap = cv2.VideoCapture(0)\n    imgAug =cv2.imread(\"Markers/23.jpg\")\n    while True:\n        sccuess, img = cap.read()\n        arucoFound = findArucoMarker(img)\n        # Loop through all the markers and augment each one\n        if len(arucoFound[0])!=0:\n            for bbox, id in zip(arucoFound[0], arucoFound[1]):\n                img = augmentAruco(bbox, id, img, imgAug)",
+        "detail": "find_markerid",
+        "documentation": {}
+    }
+]
